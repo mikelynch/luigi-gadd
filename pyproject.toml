@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "luigi-utilities"
+version = "0.1.0"
+license = "MIT"
+description = "Provides additional functionality to make Luigi more flexible"
+homepage = "https://github.com/mikelynch/luigi-utilities"
+repository = "https://github.com/mikelynch/luigi-utilities"
+authors = ["Mike Lynch <me@msl.sh>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
