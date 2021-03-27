@@ -9,6 +9,7 @@ authors = ["Mike Lynch <me@msl.sh>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
+luigi = "^3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
