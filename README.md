@@ -1,5 +1,7 @@
 # Luigi Utilities
 
+[![Tests](https://github.com/mikelynch/luigi-utilities/actions/workflows/python-tests.yml/badge.svg)](https://github.com/mikelynch/luigi-utilities/actions/workflows/python-tests.yml)
+
 This package provides additional functionality to make Luigi more flexible.
 
 ## `new_task` and `pick_output`
