@@ -142,8 +142,7 @@ class SequentialNumbersTask(luigi.Task):
         )
 
     def run(self):
-        with self.output().temporary_path() as tmp_path:
-            with open(tmp_path, "wt") as f:
+        with self.output().open("w") as f:
                 for i in range(self.min_number, self.max_number):
                     f.write(f"{i}\n")
 
