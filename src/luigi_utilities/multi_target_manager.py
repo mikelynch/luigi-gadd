@@ -36,30 +36,39 @@ def multi_target_manager(
     # Generate temporary paths for all targets and ensure parent directories exist
     temp_paths = {name: _get_temp_path(target) for name, target in targets.items()}
 
-    yield temp_paths
+    try:
+        yield temp_paths
 
-    # We want to either have all output files or none,
-    # so check all exist
-    missing_outputs = []
+        # We want to either have all output files or none,
+        # so check all exist
+        missing_outputs = []
 
-    for (name, target) in targets.items():
-        if not os.path.exists(temp_paths[name]):
-            missing_outputs.append(name)
+        for (name, target) in targets.items():
+            if not os.path.exists(temp_paths[name]):
+                missing_outputs.append(name)
 
-    if any(missing_outputs):
-        message = ", ".join(missing_outputs)
-        paths = [temp_paths[name] for name in missing_outputs]
+        if any(missing_outputs):
+            message = ", ".join(missing_outputs)
+            paths = [temp_paths[name] for name in missing_outputs]
 
-        raise FileNotFoundError(
-            errno.ENOENT, f"Output(s) for {message} were not found", paths
-        )
+            raise FileNotFoundError(
+                errno.ENOENT, f"Output(s) for {message} were not found", paths
+            )
 
-    # If all files were written to temp paths successfully,
-    # then move to their final destinations.
-    # Unfortunately, there is no way to do this completely atomically,
-    # but hopefully this move is low risk in comparison to earlier steps.
-    for (name, target) in targets.items():
-        target.fs.move(temp_paths[name], target.path, raise_if_exists=False)
+        # If all files were written to temp paths successfully,
+        # then move to their final destinations.
+        # Unfortunately, there is no way to do this completely atomically,
+        # but hopefully this move is low risk in comparison to earlier steps.
+        for (name, target) in targets.items():
+            target.fs.move(temp_paths[name], target.path, raise_if_exists=False)
+    finally:
+        # Clean up temporary files if still exist
+        # (e.g. if exception thrown during processing)
+        for tmp_path in temp_paths.values():
+            try:
+                os.remove(tmp_path)
+            except FileNotFoundError:
+                pass
 
 
 def _get_temp_path(target: luigi.target.FileSystemTarget) -> str:

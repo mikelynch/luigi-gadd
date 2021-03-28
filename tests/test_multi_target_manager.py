@@ -13,7 +13,7 @@ def _get_output_dict(dir_name: str) -> Dict[str, luigi.LocalTarget]:
     first_path = os.path.join(dir_name, "first.txt")
     second_path = os.path.join(dir_name, "second.txt")
 
-    return {    
+    return {
         "first": luigi.LocalTarget(first_path),
         "second": luigi.LocalTarget(second_path),
     }
@@ -22,7 +22,7 @@ def _get_output_dict(dir_name: str) -> Dict[str, luigi.LocalTarget]:
 def test_outputs_all_files():
     with TemporaryDirectory() as tmp_dir:
         outputs = _get_output_dict(tmp_dir)
-        
+
         with multi_target_manager(outputs) as tmp_files:
             with open(tmp_files["first"], "w") as f:
                 f.write("first")
@@ -75,3 +75,27 @@ def test_outputs_none_on_exception():
         # Test that no output
         assert not os.path.exists(outputs["first"].path)
         assert not os.path.exists(outputs["second"].path)
+
+
+def test_temp_files_cleaned_up_on_failure():
+    with TemporaryDirectory() as tmp_dir:
+        outputs = _get_output_dict(tmp_dir)
+
+        paths = {}
+
+        with pytest.raises(ZeroDivisionError) as exc_info:
+            with multi_target_manager(outputs) as tmp_files:
+                paths = tmp_files.copy()
+
+                with open(tmp_files["first"], "w") as f:
+                    f.write("first")
+
+                with open(tmp_files["second"], "w") as f:
+                    f.write("second")
+
+                # Deliberately cause exception
+                a = 1 / 0
+
+        # Test that no temp files left
+        assert not os.path.exists(paths["first"])
+        assert not os.path.exists(paths["second"])
