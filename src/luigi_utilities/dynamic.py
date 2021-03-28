@@ -8,7 +8,7 @@ T = TypeVar("T", bound=luigi.Task)
 
 def new_task(
     task_class: T,
-    requires=Union[luigi.Task, List[luigi.Task], Dict[K, luigi.Task]],
+    requires: Union[luigi.Task, List[luigi.Task], Dict[K, luigi.Task]],
     params={},
     task_name=None,
 ) -> T:
