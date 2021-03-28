@@ -54,4 +54,4 @@ def pick_output(task: luigi.Task, output_name: str) -> ExtractOutputTask:
     :param output_name: Output to select
     :return: New task instance, with dependencies dynamically set
     """
-    return new_task(ExtractOutputTask, {"output_name": output_name}, task)
+    return new_task(ExtractOutputTask, {"output_name": output_name}, task)  # type: ignore
