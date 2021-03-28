@@ -61,6 +61,9 @@ def multi_target_manager(
         # but hopefully this move is low risk in comparison to earlier steps.
         for (name, target) in targets.items():
             target.fs.move(temp_paths[name], target.path, raise_if_exists=False)
+    except Exception as e:
+        # Ensure any raised exceptions are propagated up
+        raise
     finally:
         # Clean up temporary files if still exist
         # (e.g. if exception thrown during processing)
