@@ -8,15 +8,15 @@ T = TypeVar("T", bound=luigi.Task)
 
 def new_task(
     task_class: T,
-    params={},
     requires=Union[luigi.Task, List[luigi.Task], Dict[K, luigi.Task]],
+    params={},
     task_name=None,
 ) -> T:
     """Instantiate task, dynamically specifying its requirements.
 
     :param task_class: Task type to instantiate
-    :param params: Parameters to pass to the new task
     :param requires: Requirements for task
+    :param params: Parameters to pass to the new task
     :param task_name: Optional name to use for new task
     :return: New task instance, with dependencies dynamically set
     """
@@ -54,4 +54,4 @@ def pick_output(task: luigi.Task, output_name: str) -> ExtractOutputTask:
     :param output_name: Output to select
     :return: New task instance, with dependencies dynamically set
     """
-    return new_task(ExtractOutputTask, {"output_name": output_name}, task)  # type: ignore
+    return new_task(ExtractOutputTask, task, {"output_name": output_name})  # type: ignore

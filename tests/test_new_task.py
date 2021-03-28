@@ -13,8 +13,8 @@ def test_single_output_to_single_input():
         seq = SequentialNumbersTask(tmp_dir, 0, 10)
         filter_ = new_task(
             FilterEvenOddTask,
-            {"directory": tmp_dir},
             seq,
+            {"directory": tmp_dir},
         )
 
         result = luigi.build([filter_], detailed_summary=True, local_scheduler=True)
@@ -42,11 +42,11 @@ def test_multiple_single_outputs_to_multiple_inputs():
         seq1 = SequentialNumbersTask(tmp_dir, 100, 110)
         add = new_task(
             AddNumbersTask,
-            {"directory": tmp_dir},
             {
                 "lhs": seq0,
                 "rhs": seq1,
             },
+            {"directory": tmp_dir},
         )
 
         result = luigi.build([add], detailed_summary=True, local_scheduler=True)
@@ -66,16 +66,16 @@ def test_multiple_outputs_to_multiple_inputs_on_single_task():
         seq = SequentialNumbersTask(tmp_dir, 0, 10)
         filter_ = new_task(
             FilterEvenOddTask,
-            {"directory": tmp_dir},
             seq,
+            {"directory": tmp_dir},
         )
         add = new_task(
             AddNumbersTask,
-            {"directory": tmp_dir},
             {
                 "lhs": pick_output(filter_, "even"),
                 "rhs": pick_output(filter_, "odd"),
             },
+            {"directory": tmp_dir},
         )
 
         result = luigi.build([add], detailed_summary=True, local_scheduler=True)
@@ -99,18 +99,18 @@ def test_multiple_outputs_to_separate_tasks():
         seq = SequentialNumbersTask(tmp_dir, 0, 10)
         filter_ = new_task(
             FilterEvenOddTask,
-            {"directory": tmp_dir},
             seq,
+            {"directory": tmp_dir},
         )
         filter0_ = new_task(
             FilterEvenOddTask,
-            {"directory": tmp_dir, "suffix": "0"},
             pick_output(filter_, "even"),
+            {"directory": tmp_dir, "suffix": "0"},
         )
         filter1_ = new_task(
             FilterEvenOddTask,
-            {"directory": tmp_dir, "suffix": "1"},
             pick_output(filter_, "odd"),
+            {"directory": tmp_dir, "suffix": "1"},
         )
 
         result = luigi.build(
@@ -131,6 +131,40 @@ def test_multiple_outputs_to_separate_tasks():
         assert odd[1] == 3
 
 
+def test_multiple_outputs_to_multiple_inputs_on_single_task2():
+    # Test graph (right nodes depend on nodes to their left):
+    #                Filter0
+    #              ╱
+    # Seq ─ Filter
+    #              ╲
+    #                Filter1
+    with TemporaryDirectory() as tmp_dir:
+        seq0 = SequentialNumbersTask(tmp_dir, 0, 10)
+        filter_ = new_task(
+            FilterEvenOddTask,
+            seq0,
+            {"directory": tmp_dir},
+        )
+        seq1 = SequentialNumbersTask(tmp_dir, 100, 110)
+        add = new_task(
+            AddNumbersTask,
+            {
+                "lhs": pick_output(filter_, "even"),
+                "rhs": seq1,
+            },
+            {"directory": tmp_dir},
+        )
+
+        result = luigi.build([add], detailed_summary=True, local_scheduler=True)
+        assert result.status == luigi.LuigiStatusCode.SUCCESS
+
+        with open(add.output().path, "rt") as f:
+            sums = [int(l) for l in f.readlines()]
+
+        assert sums[0] == 100
+        assert sums[1] == 103
+
+
 class SequentialNumbersTask(luigi.Task):
     directory = luigi.Parameter()
     min_number = luigi.IntParameter()
@@ -143,8 +177,8 @@ class SequentialNumbersTask(luigi.Task):
 
     def run(self):
         with self.output().open("w") as f:
-                for i in range(self.min_number, self.max_number):
-                    f.write(f"{i}\n")
+            for i in range(self.min_number, self.max_number):
+                f.write(f"{i}\n")
 
 
 class FilterEvenOddTask(luigi.Task):
