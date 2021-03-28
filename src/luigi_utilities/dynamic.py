@@ -9,8 +9,8 @@ T = TypeVar("T", bound=luigi.Task)
 def new_task(
     task_class: T,
     requires: Union[luigi.Task, List[luigi.Task], Dict[K, luigi.Task]],
-    params={},
-    task_name=None,
+    params: Dict = {},
+    task_name: str = None,
 ) -> T:
     """Instantiate task, dynamically specifying its requirements.
 
