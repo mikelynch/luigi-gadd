@@ -67,7 +67,7 @@ def pick_output(
             RerunExtractOutputTask,
             task,
             {"hash_dir": task.hash_dir, "output_name": output_name},
-        )
+        )  # type: ignore
     else:
         # Otherwise, use the standard task.
         return new_task(ExtractOutputTask, task, {"output_name": output_name})  # type: ignore
