@@ -1,8 +1,9 @@
-# Luigi Utilities
+# Luigi GADd
 
-[![Tests](https://github.com/mikelynch/luigi-utilities/actions/workflows/python-tests.yml/badge.svg)](https://github.com/mikelynch/luigi-utilities/actions/workflows/python-tests.yml)
+[![Tests](https://github.com/mikelynch/luigi-gadd/actions/workflows/python-tests.yml/badge.svg)](https://github.com/mikelynch/luigi-gadd/actions/workflows/python-tests.yml)
 
-This package provides additional functionality to make Luigi more flexible.
+This package provides several features to make Luigi more powerful,
+and able to tackle a wider range of problems.
 
 ## `new_task` and `pick_output`
 
@@ -36,7 +37,7 @@ The `new_task` function adds this functionality, allowing you to do:
 ```python
 import luigi
 
-from luigi_utilities import new_task
+from luigi_gadd import new_task
 
 class SquareTask(luigi.Task):
     def output(self):
@@ -69,7 +70,7 @@ This can be used like this:
 ```python
 import luigi
 
-from luigi_utilities import new_task, pick_task
+from luigi_gadd import new_task, pick_task
 
 class OddEvenTask(luigi.Task):
     def output(self):
@@ -103,7 +104,7 @@ are they renamed to their target filenames, e.g.:
 ```python
 import luigi
 
-from luigi_utilities import multi_target_manager
+from luigi_gadd import multi_target_manager
 
 class MyTask(luigi.Task):
     def output(self):
@@ -150,7 +151,7 @@ and of all its parameters, e.g.:
 ```python
 import luigi
 
-from luigi_utilities import AutoRerunTask
+from luigi_gadd import AutoRerunTask
 
 class SequentialNumbersTask(AutoRerunTask):
     min_number = luigi.IntParameter()

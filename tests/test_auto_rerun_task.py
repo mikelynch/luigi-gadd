@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 
 import luigi
 
-from luigi_utilities import AutoRerunTask, RerunExtTask, new_task
+from luigi_gadd import AutoRerunTask, RerunExtTask, new_task
 
 
 def test_auto_rerun_task_for_input_changes():

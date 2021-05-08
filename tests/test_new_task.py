@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 
 import luigi
 
-from luigi_utilities import multi_target_manager, new_task, pick_output
+from luigi_gadd import multi_target_manager, new_task, pick_output
 
 
 def test_single_output_to_single_input():

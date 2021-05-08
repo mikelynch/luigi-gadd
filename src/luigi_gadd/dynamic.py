@@ -2,7 +2,7 @@ from typing import Dict, List, TypeVar, Union
 
 import luigi  # type: ignore
 
-from luigi_utilities.auto_rerun_task import AutoRerunTask, RerunExtractOutputTask
+from luigi_gadd.auto_rerun_task import AutoRerunTask, RerunExtractOutputTask
 
 K = TypeVar("K")
 T = TypeVar("T", bound=luigi.Task)

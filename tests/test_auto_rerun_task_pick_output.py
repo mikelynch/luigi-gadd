@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 
 import luigi
 
-from luigi_utilities import (
+from luigi_gadd import (
     AutoRerunTask,
     RerunExtTask,
     multi_target_manager,
