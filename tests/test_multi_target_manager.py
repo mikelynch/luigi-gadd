@@ -5,7 +5,7 @@ from typing import Dict
 import luigi
 import pytest
 
-from luigi_utilities import multi_target_manager
+from luigi_gadd import multi_target_manager
 
 
 def _get_output_dict(dir_name: str) -> Dict[str, luigi.LocalTarget]:

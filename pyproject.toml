@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "luigi-utilities"
+name = "luigi-gadd"
 version = "0.1.0"
 license = "MIT"
 description = "Provides additional functionality to make Luigi more flexible"
-homepage = "https://github.com/mikelynch/luigi-utilities"
-repository = "https://github.com/mikelynch/luigi-utilities"
+homepage = "https://github.com/mikelynch/luigi-gadd"
+repository = "https://github.com/mikelynch/luigi-gadd"
 authors = ["Mike Lynch <me@msl.sh>"]
 
 [tool.poetry.dependencies]
