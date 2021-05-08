@@ -1,5 +1,6 @@
 import hashlib
 import os
+from typing import Optional
 
 import luigi  # type: ignore
 from luigi.contrib.opener import OpenerTarget  # type: ignore
@@ -52,6 +53,7 @@ class AutoRerunTask(luigi.Task):
 
         # Check if the old hash differs from the current one:
         # if so, then not complete
+        old_hash: Optional[str] = None
         try:
             with open(self.hash_path(), "rt") as f:
                 old_hash = f.read().strip()
