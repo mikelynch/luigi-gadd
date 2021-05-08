@@ -121,3 +121,65 @@ class MyTask(luigi.Task):
 This will ensure that either both files were written to successfully,
 in which case `a.txt` and `b.txt` will both exist,
 or that neither do.
+
+## `AutoRerunTask`
+
+By default, Luigi tasks are only run if any of their outputs are missing.
+Imagine a pipeline that takes an input file,
+and then runs tasks which transform that data,
+which has been run to completion once.
+If the input file was changed,
+and this pipeline was run again,
+the output from the pipeline would not be recalculated,
+as the output of the final task would already exist.
+
+`AutoRerunTask` is a subtype of `luigi.Task`,
+which adds functionality to generate hashes of
+the input data and parameters,
+so that if these are changed,
+the tasks are considered incomplete,
+and will be rerun.
+This is done by calculating a hash which represents the output of the task,
+which is written to disk.
+On subsequent runs of the pipeline,
+this hash value is compared with the current value.
+The hash of a task depends on
+the hashes of its inputs,
+and of all its parameters, e.g.:
+
+```python
+import luigi
+
+from luigi_utilities import AutoRerunTask
+
+class SequentialNumbersTask(AutoRerunTask):
+    min_number = luigi.IntParameter()
+    max_number = luigi.IntParameter()
+
+    def output(self):
+        return luigi.LocalTarget("seq.txt")
+
+    def run(self):
+        with self.output().open("w") as f:
+            for i in range(self.min_number, self.max_number):
+                f.write(f"{i}\n")
+```
+
+When this task is run, the file `seq.txt` is created.
+If the values of `min_number` or `max_number` are changed,
+then the value of the hash for this task would change,
+so that the task would be rerun.
+
+An `AutoRerunTask` is only considered complete if:
+* All of its outputs exist
+* Its hash exists on disk
+* The hash on disk matches the current hash value
+* All of the task's requirements (i.e. ancestors) are complete
+
+Currently, the value of a task's hash depends on:
+* The hashes of all its requirements
+* All the parameters for the task
+
+This means that `AutoRerunTask` and regular `luigi.Task` cannot currently be mixed,
+as the `AutoRerunTask` needs to be able to check the hash of earlier tasks
+in the pipeline.
