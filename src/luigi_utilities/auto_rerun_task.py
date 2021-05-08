@@ -106,3 +106,13 @@ class RerunExtTask(AutoRerunTask):
 
     def run(self):
         pass
+
+
+class RerunExtractOutputTask(AutoRerunTask):
+    """Helper task type used for unpacking multiple outputs,
+    that works with auto rerun detection."""
+
+    output_name = luigi.Parameter()
+
+    def output(self):
+        return self.input()[self.output_name]

@@ -2,6 +2,8 @@ from typing import Dict, List, TypeVar, Union
 
 import luigi  # type: ignore
 
+from luigi_utilities.auto_rerun_task import AutoRerunTask, RerunExtractOutputTask
+
 K = TypeVar("K")
 T = TypeVar("T", bound=luigi.Task)
 
@@ -47,11 +49,25 @@ class ExtractOutputTask(luigi.Task):
         return self.input()[self.output_name]
 
 
-def pick_output(task: luigi.Task, output_name: str) -> ExtractOutputTask:
+def pick_output(
+    task: Union[AutoRerunTask, luigi.Task], output_name: str
+) -> ExtractOutputTask:
     """Pick a single output from a dict with multiple ones
 
     :param task: Task with multiple outputs
     :param output_name: Output to select
     :return: New task instance, with dependencies dynamically set
     """
-    return new_task(ExtractOutputTask, task, {"output_name": output_name})  # type: ignore
+
+    if isinstance(task, AutoRerunTask):
+        # If this is an AutoRerunTask,
+        # then we need to support getting
+        # the content hashes of the task
+        return new_task(
+            RerunExtractOutputTask,
+            task,
+            {"hash_dir": task.hash_dir, "output_name": output_name},
+        )
+    else:
+        # Otherwise, use the standard task.
+        return new_task(ExtractOutputTask, task, {"output_name": output_name})  # type: ignore
