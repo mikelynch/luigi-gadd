@@ -63,11 +63,11 @@ def pick_output(
         # If this is an AutoRerunTask,
         # then we need to support getting
         # the content hashes of the task
-        return new_task(
+        return new_task(  # type: ignore
             RerunExtractOutputTask,
             task,
             {"hash_dir": task.hash_dir, "output_name": output_name},
-        )  # type: ignore
+        )
     else:
         # Otherwise, use the standard task.
         return new_task(ExtractOutputTask, task, {"output_name": output_name})  # type: ignore
