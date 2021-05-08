@@ -183,3 +183,8 @@ Currently, the value of a task's hash depends on:
 This means that `AutoRerunTask` and regular `luigi.Task` cannot currently be mixed,
 as the `AutoRerunTask` needs to be able to check the hash of earlier tasks
 in the pipeline.
+
+These hashes are stored in a directory specified by
+the `hash_dir` parameter on `AutoRerunTask`.
+This must be set for all instances of the task,
+so there is a persistent location to find these files between runs.
