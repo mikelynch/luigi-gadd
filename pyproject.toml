@@ -16,31 +16,26 @@ Homepage = "https://github.com/mikelynch/luigi-gadd"
 Repository = "https://github.com/mikelynch/luigi-gadd"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.10"
-isort = "^5.13"
 mypy = "^1.14"
 pytest = "^8.3"
-tox = "^4.23"
+ruff = "^0.9.1"
 
-[tool.black]
-line-length = 90
+[tool.ruff]
+line-length = 88
+indent-width = 4
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-isolated_build = true
-envlist = py39,py310,py311,py312,py313
-
-[testenv]
-whitelist_externals = poetry
-commands =
-    poetry install -v
-    poetry run black .
-    poetry run isort .
-    poetry run mypy src
-    poetry run pytest tests/
-"""
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]

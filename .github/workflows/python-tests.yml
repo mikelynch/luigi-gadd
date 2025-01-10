@@ -27,5 +27,11 @@ jobs:
           poetry-version: 2.0.0
       - name: Install dependencies
         run: poetry install --no-interaction
-      - name: Run tox
-        run: poetry run tox -e py
+      - name: Run ruff format
+        run: poetry run ruff format .
+      - name: Run ruff check
+        run: poetry run ruff check .
+      - name: Run mypy
+        run: poetry run mypy src tests
+      - name: Run pytest
+        run: poetry run pytest tests/
